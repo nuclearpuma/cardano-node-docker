@@ -30,7 +30,7 @@ docker run -dit --rm \
     -e REPLACE_EXISTING_CONFIG="True" \
     -v $PWD/active_config/main/block-producing:/config/ \
     --name cardano-main-producing \
-    arrakis/cardano-node:pioneer --start
+    arrakis/cardano-node:pioneer2 --start
 
 # Start relay node
 docker run -dit --rm \
@@ -51,6 +51,6 @@ docker run -dit --rm \
     -e REPLACE_EXISTING_CONFIG="True" \
     -v $PWD/active_config/main/relay1:/config/ \
     --name cardano-main-relay \
-    arrakis/cardano-node:pioneer --start
+    arrakis/cardano-node:pioneer2 --start
 
 docker logs -f cardano-main-producing

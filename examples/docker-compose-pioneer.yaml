@@ -3,7 +3,7 @@
 version: "3"
 services:
   cardano-byron-producing: # block-producing node
-    image: arrakis/cardano-node:pioneer
+    image: arrakis/cardano-node:pioneer2
     container_name: cardano-pioneer-producing
     network_mode: host
     volumes:
@@ -22,7 +22,7 @@ services:
     command: --start
     restart: unless-stopped
   cardano-byron-relay: # relay node
-    image: arrakis/cardano-node:pioneer
+    image: arrakis/cardano-node:pioneer2
     container_name: cardano-pioneer-relay
     network_mode: host
     volumes:

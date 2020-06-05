@@ -14,4 +14,4 @@ docker run -it --rm \
     -e RESOLVE_HOSTNAMES="True" \
     -e REPLACE_EXISTING_CONFIG="False" \
     -v $PWD/active_config/main/block-producing:/config/ \
-    arrakis/cardano-node:pioneer --cli
+    arrakis/cardano-node:pioneer2 --cli
