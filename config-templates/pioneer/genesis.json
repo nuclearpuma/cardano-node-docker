@@ -28,7 +28,6 @@
     "a0": 0.1
   },
   "protocolMagicId": 42,
-  "startTime": "2020-05-24T15:00:00.000000000Z",
   "genDelegs": {
     "68c3462163394860dbea2153d9969c7493c3aedcafa951cce80d54f009179c6e": {
       "delegate": "1b63914346d3e21616cac6d9b8ed31817b946b352ff139beb3fd93d5befbb4ec",

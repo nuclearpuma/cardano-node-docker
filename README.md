@@ -15,7 +15,7 @@ For information on block producer and relay nodes read the official documentatio
 
 ### docker
 
-### Create shared network for containers
+#### Create shared network for containers
 
 This creates a docker network for the containers, so the containers can communicate with eachother.
 
@@ -49,7 +49,7 @@ docker run -dit --rm \
 ```
 
 
-#### relay node on pioneer net
+#### relay node on pioneer testnet
 
 ```
 docker run -dit --rm \
@@ -74,7 +74,7 @@ docker run -dit --rm \
 ```
 
 
-### docker-compose on pioneer mainnet
+### docker-compose on pioneer testnet
 
 This will run both a block-producing node and a relay node on the byron main net.
 
