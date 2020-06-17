@@ -1,0 +1,33 @@
+function check_balance {
+    echo "Checking balance for address ${ADDRESS}."
+    echo "UTXO#TXIX: LOVELACE"
+    while true; do
+
+        UTXOS=$(cardano-cli shelley query utxo \
+            ${NETWORK_ARGUMENT} \
+            --address ${ADDRESS} | tail -n +3)
+        while IFS= read -r line ; do
+            arr=(${line})
+            LOVELACE=${arr[2]}
+
+            if [ -n "${LOVELACE}" ]; then
+                echo "${arr[0]}#${arr[1]}: ${arr[2]}"
+                if [ "$LOVELACE" -ge "$TOTAL_PRICE" ]; then
+                    UTXO=${arr[0]}
+                    TXIX=${arr[1]}
+                    break
+                fi
+            fi
+        done <<< "${UTXOS}"
+
+        if [ -n "${UTXO}" ]; then
+            echo "Address is successfully funded."
+            break
+        fi
+        echo "You need to fund your address ${ADDRESS} to register the key."
+        echo "If you have funded your address and your node is still syncing wait for it to finish."
+
+        sleep 10
+    done
+}
+

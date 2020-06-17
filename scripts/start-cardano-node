@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Init config
+python3 /scripts/init_config.py
+
 # Init cardano-node variables
 source /scripts/init-node-vars
 
@@ -38,14 +41,9 @@ function node_info {
     echo "Prometheus Port: ${PROMETHEUS_PORT}"
 }
 
-function init_config {
-    python3 /scripts/init_config.py
-}
-
 function start_node {
     echo "Starting cardano-node"
     node_info
-    init_config
     cardano-node run \
         --topology ${NODE_PATH}/topology.json \
         --database-path ${NODE_PATH}/db \

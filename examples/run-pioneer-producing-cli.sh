@@ -4,19 +4,19 @@
 # This is an example on how to start cli for a node.
 #
 
-# Start relay node
+# Start block-producing node
 docker run -it --rm \
     --network=host \
     -e PUID=$(id -u) \
     -e PGID=$(id -u) \
-    -e NODE_PORT="3001" \
-    -e NODE_NAME="relay1" \
-    -e NODE_RELAY="True" \
-    -e NODE_TOPOLOGY="127.0.0.1:3000/1" \
+    -e NODE_PORT="3000" \
+    -e NODE_NAME="block-producing" \
+    -e NODE_TOPOLOGY="127.0.0.1:3001/1" \
+    -e NODE_RELAY="False" \
     -e CARDANO_NETWORK="pioneer" \
-    -e EKG_PORT="12789" \
-    -e PROMETHEUS_PORT="12799" \
+    -e EKG_PORT="12788" \
+    -e PROMETHEUS_PORT="12798" \
     -e RESOLVE_HOSTNAMES="True" \
     -e REPLACE_EXISTING_CONFIG="False" \
-    -v $PWD/active_config/pioneer/relay1:/config/ \
+    -v $PWD/active_config/pioneer/block-producing:/config/ \
     arrakis/cardano-node:1.13.0 --cli

@@ -54,7 +54,7 @@ ENV NODE_PORT="3000" \
     PATH="/root/.cabal/bin/:/scripts/:/cardano-node/scripts/:${PATH}"
 
 # Add config
-ADD config-templates/ /config-templates/
+ADD cfg-templates/ /cfg-templates/
 RUN mkdir -p /config/
 VOLUME /config/
 

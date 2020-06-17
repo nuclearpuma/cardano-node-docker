@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Following guide:
+# https://github.com/input-output-hk/cardano-tutorials/blob/master/node-setup/020_keys_and_addresses.md
+
 # Init node vars
 source /scripts/init-node-vars
 
@@ -22,11 +25,22 @@ if [ ! -d "${NODE_PATH}/staking" ]; then
     cardano-cli shelley address build \
         --payment-verification-key-file payment.vkey \
         --stake-verification-key-file stake.vkey \
-        --out-file payment.addr
+        --out-file payment.addr \
+        ${NETWORK_ARGUMENT}
+
+    ## Generate Stake address
+    cardano-cli shelley stake-address build \
+        --stake-verification-key-file stake.vkey \
+        --out-file stake.addr \
+        ${NETWORK_ARGUMENT}
 
     PAYMENT_ADDR=$(cat payment.addr)
-    echo "Generated staking address: ${PAYMENT_ADDR}"
+    echo "Generated payment address: ${PAYMENT_ADDR}"
+    STAKE_ADDR=$(cat stake.addr)
+    echo "Generated payment address: ${STAKE_ADDR}"
 else
     PAYMENT_ADDR=$(cat ${NODE_PATH}/staking/payment.addr)
-    echo "Stake address already exists: ${PAYMENT_ADDR}."
+    echo "Payment address already exists: ${PAYMENT_ADDR}."
+    STAKE_ADDR=$(cat stake.addr)
+    echo "Stake address already exists: ${STAKE_ADDR}"
 fi

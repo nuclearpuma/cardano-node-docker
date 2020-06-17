@@ -6,7 +6,7 @@ import json
 import socket
 import time
 
-CONFIG_TEMPLATES_ROOT_PATH = '/config-templates/'
+CONFIG_TEMPLATES_ROOT_PATH = '/cfg-templates/'
 CONFIG_OUTPUT_ROOT_PATH = '/config/'
 
 def slugify(value):

@@ -1,21 +1,26 @@
 #!/bin/bash
 
 # From Documentation
-# https://github.com/input-output-hk/cardano-tutorials/blob/master/node-setup/tx.md
-# https://github.com/input-output-hk/cardano-tutorials/blob/master/node-setup/staking-key.md
+# https://github.com/input-output-hk/cardano-tutorials/blob/master/node-setup/040_transactions.md
+# https://github.com/input-output-hk/cardano-tutorials/blob/master/node-setup/050_register_key.md
 
-# Init vars
+# Init functions and vars
+source /scripts/functions/check_balance
 source /scripts/init-node-vars
-TTL=250000
+TTL=987654
 
 # Enter staking directory
 cd ${NODE_PATH}/staking/
+mkdir -p status
+mkdir -p transactions
 
 # Create an address registration certificate
 if [ ! -f "${NODE_PATH}/staking/stake.cert" ]; then
     cardano-cli shelley stake-address registration-certificate \
         --staking-verification-key-file stake.vkey \
         --out-file stake.cert
+else
+    echo "stake.cert certificate already exists."
 fi
 
 # Generate protocol
@@ -44,50 +49,39 @@ echo "Total Price is: ${TOTAL_PRICE}"
 
 # Find UTXO in address with enough lovelace to do the transaction
 ADDRESS=$(cat payment.addr)
-UTXOS=$(cardano-cli shelley query utxo \
-    ${NETWORK_ARGUMENT} \
-    --address ${ADDRESS} | tail -n +3)
-while IFS= read -r line ; do
-    arr=(${line})
-    LOVELACE=${arr[2]}
+check_balance
 
-    if [ -n "${LOVELACE}" ]; then
-        if [ "$LOVELACE" -ge "$TOTAL_PRICE" ]; then
-            UTXO=${arr[0]}
-            TXIX=${arr[1]}
-            break
-        fi
-    fi
-done <<< "${UTXOS}"
-
-if [ -z "${UTXO}" ]; then
-    echo "You do not have enough ADA in your address ${ADDRESS} to register the key"
-    exit
-fi
-
-# Create transaction
+# Display transaction info
 REMAINING_AFTER_TX=$(expr ${LOVELACE} - ${TOTAL_PRICE})
 echo "Creating transaction"
 echo "UTXO: ${UTXO}"
 echo "Lovelace Holding: ${LOVELACE}"
 echo "Lovelace after transaction: ${REMAINING_AFTER_TX}"
-cardano-cli shelley transaction build-raw \
-    --tx-in ${UTXO}\#${TXIX} \
-    --tx-out $(cat payment.addr)+${REMAINING_AFTER_TX} \
-    --ttl ${TTL} \
-    --fee ${FEE} \
-    --out-file tx.raw \
-    --certificate-file stake.cert
 
-# Sign transaction
-cardano-cli shelley transaction sign \
-    --tx-body-file tx.raw \
-    --signing-key-file payment.skey \
-    --signing-key-file stake.skey \
-    ${NETWORK_ARGUMENT} \
-    --out-file tx.signed
+# Create the transaction
+if [ ! -f "${NODE_PATH}/staking/stake.cert" ]; then
+    cardano-cli shelley transaction build-raw \
+        --tx-in ${UTXO}\#${TXIX} \
+        --tx-out $(cat payment.addr)+${REMAINING_AFTER_TX} \
+        --ttl ${TTL} \
+        --fee ${FEE} \
+        --out-file transactions/register_stake_address.raw \
+        --certificate-file stake.cert
 
-# Submit
-cardano-cli shelley transaction submit \
-    --tx-file tx.signed \
-    ${NETWORK_ARGUMENT}
+    # Sign the transaction
+    cardano-cli shelley transaction sign \
+        --tx-body-file tx.raw \
+        --signing-key-file payment.skey \
+        --signing-key-file stake.skey \
+        ${NETWORK_ARGUMENT} \
+        --out-file transactions/register_stake_address.signed
+
+    # Submit the transaction
+    cardano-cli shelley transaction submit \
+        --tx-file transactions/register_stake_address.signed \
+        ${NETWORK_ARGUMENT}
+    touch transactions/register_stake_address.submitted
+    echo "Your stake key is now registered in the blockchain."
+else
+    echo "Your stake key has already been registered in the blockchain."
+fi
