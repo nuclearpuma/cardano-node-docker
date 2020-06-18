@@ -18,5 +18,6 @@ docker run -it --rm \
     -e PROMETHEUS_PORT="12798" \
     -e RESOLVE_HOSTNAMES="True" \
     -e REPLACE_EXISTING_CONFIG="False" \
+    -e HOST_ADDR="127.0.0.1" \
     -v $PWD/active_config/pioneer/block-producing:/config/ \
     arrakis/cardano-node:1.13.0 --cli

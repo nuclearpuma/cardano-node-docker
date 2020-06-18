@@ -8,6 +8,9 @@ source /scripts/init-node-vars
 
 # Handle IP addresses
 export PUBLIC_IP=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com | awk -F'"' '{ print $2}')
+if [ -z "${HOST_ADDR}" ]; then
+    HOST_ADDR=${PUBLIC_IP}
+fi
 
 function help {
     echo "Arguments:"
@@ -22,6 +25,7 @@ function help {
     echo "NODE_NAME                     Name of node. Default: node1."
     echo "NODE_TOPOLOGY                 Topology of the node. Should be comma separated for each individual node to add, on the form: <ip>:<port>/<valency>. So for example: 127.0.0.1:3001/1,127.0.0.1:3002/1."
     echo "NODE_RELAY                    Set to True if default IOHK relay should be added to the network topology. Default: False."
+    echo "HOST_ADDR                     Set cardano-node host address. Defaults to public IP address."
     echo "CARDANO_NETWORK               Carano network to use (main, test, pioneer). Default: main."
     echo "EKG_PORT                      Port of EKG monitoring. Default: 12788."
     echo "PROMETHEUS_PORT               Port of Prometheus monitoring. Default: 12798."
@@ -34,6 +38,7 @@ function help {
 function node_info {
     echo "Running cardano-node on ${CARDANO_NETWORK} network"
     echo "Node name: ${NODE_NAME}"
+    echo "Host Address: ${HOST_ADDR}"
     echo "Public IP: ${PUBLIC_IP}"
     echo "Node Port: ${NODE_PORT}"
     echo "Node path: ${NODE_PATH}"
@@ -48,7 +53,7 @@ function start_node {
         --topology ${NODE_PATH}/topology.json \
         --database-path ${NODE_PATH}/db \
         --socket-path ${CARDANO_NODE_SOCKET_PATH} \
-        --host-addr 0.0.0.0 \
+        --host-addr ${HOST_ADDR} \
         --port ${NODE_PORT} \
         --config ${NODE_PATH}/config.json
 }
