@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# Init config
-python3 /scripts/init_config.py
+# Init config on first run
+if [ ! -f "${NODE_PATH}/VARS" ]; then
+    python3 /scripts/init_config.py
+fi
 
 # Init cardano-node variables
 source /scripts/init-node-vars
@@ -48,6 +50,7 @@ function node_info {
 
 function start_node {
     echo "Starting cardano-node"
+    python3 /scripts/init_config.py
     node_info
     cardano-node run \
         --topology ${NODE_PATH}/topology.json \

@@ -37,7 +37,7 @@ if [ ! -d "${NODE_PATH}/staking" ]; then
     PAYMENT_ADDR=$(cat payment.addr)
     echo "Generated payment address: ${PAYMENT_ADDR}"
     STAKE_ADDR=$(cat stake.addr)
-    echo "Generated payment address: ${STAKE_ADDR}"
+    echo "Generated stake address: ${STAKE_ADDR}"
 else
     PAYMENT_ADDR=$(cat ${NODE_PATH}/staking/payment.addr)
     echo "Payment address already exists: ${PAYMENT_ADDR}."
