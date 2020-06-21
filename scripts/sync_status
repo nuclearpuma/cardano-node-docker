@@ -1,5 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 # Thanks to Smaug from https://t.me/CardanoStakePoolWorkgroup
+
+source /scripts/functions/wait_for_socket
+wait_for_socket
 
 GENESIS=${NODE_PATH}/genesis.json
 
@@ -10,6 +13,6 @@ now=$(date +'%s')
 epoch=$(expr \( $now - $start \) / $epoch_length)
 slot=$(expr \( $now - $start \) % $epoch_length)
 unSlot=$(expr $epoch \* $epoch_length + $slot)
-currentUnSlot=$(cardano-cli shelley query tip —testnet-magic 42 | grep -oP 'unSlotNo = \K\d+')
+currentUnSlot=$(cardano-cli shelley query tip --testnet-magic 42 | grep -oP 'unSlotNo = \K\d+')
 
 echo "slot $currentUnSlot/$unSlot $(expr $currentUnSlot \* 100 / $unSlot)%"

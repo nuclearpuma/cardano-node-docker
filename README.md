@@ -10,6 +10,16 @@ Here are some example snippets to help you get started creating a some nodes.
 You will, by default, need to open the port 3000 for the block-producing node and 3001 for the relay node.
 
 
+## Steps
+1. generate_stake_address
+2. generate_operational_certificates
+3. generate_registration_certificates
+4. Move generated files to block-producing node
+On block-producing node run:
+5. register_stake_address
+6. register_stake_pool
+
+
 ## Block producers and Relays
 For information on block producer and relay nodes read the official documentation [Block producers and Relays](https://github.com/input-output-hk/cardano-tutorials/blob/master/node-setup/topology.md)
 

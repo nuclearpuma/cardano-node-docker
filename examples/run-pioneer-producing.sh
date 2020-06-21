@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# This is an example on how to start cli for a node.
+# This is an example on how to start a stakepool
 #
 
 # Start block-producing node
@@ -25,4 +25,4 @@ docker run -it --rm \
     -e CREATE_STAKEPOOL="True" \
     -v $PWD/active_config/pioneer/block-producing:/config/ \
     -v $PWD/../scripts/:/scripts/ \
-    arrakis/cardano-node:1.13.0 --cli
+    arrakis/cardano-node:1.13.0 --start --stakepool

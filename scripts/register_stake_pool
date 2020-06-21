@@ -1,14 +1,10 @@
 #!/bin/bash
 
 # From Documentation
-# https://github.com/input-output-hk/cardano-tutorials/blob/master/node-setup/040_transactions.md
-# https://github.com/input-output-hk/cardano-tutorials/blob/master/node-setup/050_register_key.md
+# https://github.com/input-output-hk/cardano-tutorials/blob/master/node-setup/080_register_stakepool.md
 
-# Init functions and vars
-
+# Init vars
 source /scripts/functions/check_balance
-source /scripts/functions/check_address_registration
-source /scripts/functions/wait_for_address_registration
 source /scripts/functions/wait_for_slot
 source /scripts/functions/wait_for_sync
 source /scripts/init_node_vars
@@ -18,14 +14,9 @@ cd ${NODE_PATH}/staking/
 mkdir -p transactions
 
 echo ""
-echo "Submitting staking addresses to the blockchain."
+echo "Submitting stake pool certificates to the blockchain."
 
 # Check for required files
-if [ ! -f "stake.vkey" ]; then
-    echo "Missing required stake.vkey. You need to run \`generate_stake_address\` to generate this key."
-    MISSING_FILES=1
-fi
-
 if [ ! -f "stake.skey" ]; then
     echo "Missing required stake.skey. You need to run \`generate_stake_address\` to generate this key."
     MISSING_FILES=1
@@ -41,36 +32,40 @@ if [ ! -f "payment.addr" ]; then
     MISSING_FILES=1
 fi
 
+if [ ! -f "cold-keys/cold.skey" ]; then
+    echo "Missing required staking/cold-keys/cold.skey. You need to run \`generate_operational_certificate\` to generate this key."
+    MISSING_FILES=1
+fi
+
+if [ ! -f "pool.cert" ]; then
+    echo "Missing required staking/pool.cert. You need to run \`generate_registration_certificate\` to generate this certificate."
+    MISSING_FILES=1
+fi
+
+if [ ! -f "delegation.cert" ]; then
+    echo "Missing required staking/delegation.cert. You need to run \`generate_registration_certificate\` to generate this certificate."
+    MISSING_FILES=1
+fi
+
 if [ -n "$MISSING_FILES" ]; then
+    exit
+fi
+
+if [ -f "${NODE_PATH}/staking/transactions/register_stake_pool.submitted" ]; then
+    echo "Your stake pool has already been registered in the blockchain."
     exit
 fi
 
 # Wait for node to sync
 wait_for_sync 99
 
-if [ -n "$(check_address_registration)" ]; then
-    touch transactions/register_stake_address.submitted
-    echo "Your stake address has already been registered in the blockchain."
-    exit
-fi
-
-# Create an address registration certificate
-if [ ! -f "${NODE_PATH}/staking/stake.cert" ]; then
-    cardano-cli shelley stake-address registration-certificate \
-        --staking-verification-key-file stake.vkey \
-        --out-file stake.cert
-    echo "Created stake.cert"
-else
-    echo "stake.cert certificate already exists."
-fi
-
 # Generate protocol
 cardano-cli shelley query protocol-parameters \
     ${NETWORK_ARGUMENT} \
     --out-file protocol.json
 
-# Get key-deposit
-KEY_DEPOSIT=$(cat protocol.json  | grep keyDeposit | tr ' ' '\n' | tail -1 | sed 's/,//g')
+# Get pool-deposit
+POOL_DEPOSIT=$(cat protocol.json  | grep poolDeposit | tr ' ' '\n' | tail -1 | sed 's/,//g')
 
 # Get tip
 SLOT=$(get_slot)
@@ -87,12 +82,13 @@ FEE=$(cardano-cli shelley transaction calculate-min-fee \
     ${NETWORK_ARGUMENT} \
     --signing-key-file payment.skey \
     --signing-key-file stake.skey \
-    --certificate-file stake.cert \
+    --signing-key-file cold-keys/cold.skey \
+    --certificate-file pool.cert \
+    --certificate-file delegation.cert \
     --protocol-params-file protocol.json | tr ' ' '\n' | tail -1)
-TOTAL_PRICE=$(expr ${FEE} + ${KEY_DEPOSIT})
-
+TOTAL_PRICE=$(expr ${FEE} + ${POOL_DEPOSIT})
 echo "Fee is: ${FEE}"
-echo "Key-Deposit: ${KEY_DEPOSIT}"
+echo "Pool-Deposit: ${POOL_DEPOSIT}"
 echo "Total Price is: ${TOTAL_PRICE}"
 
 # Find UTXO in address with enough lovelace to do the transaction
@@ -112,20 +108,22 @@ cardano-cli shelley transaction build-raw \
     --tx-out $(cat payment.addr)+${REMAINING_AFTER_TX} \
     --ttl ${TTL} \
     --fee ${FEE} \
-    --out-file transactions/register_stake_address.raw \
-    --certificate-file stake.cert
+    --out-file transactions/register_stake_pool.raw \
+    --certificate-file pool.cert \
+    --certificate-file delegation.cert
 
 # Sign the transaction
 cardano-cli shelley transaction sign \
-    --tx-body-file transactions/register_stake_address.raw \
+    --tx-body-file transactions/register_stake_pool.raw \
     --signing-key-file payment.skey \
     --signing-key-file stake.skey \
+    --signing-key-file cold-keys/cold.skey \
     ${NETWORK_ARGUMENT} \
-    --out-file transactions/register_stake_address.signed
+    --out-file transactions/register_stake_pool.signed
 
 # Submit the transaction
 OUT=$(cardano-cli shelley transaction submit \
-    --tx-file transactions/register_stake_address.signed \
+    --tx-file transactions/register_stake_pool.signed \
     ${NETWORK_ARGUMENT})
 
 if [[ $OUT =~ "Error" ]]
@@ -134,10 +132,7 @@ then
     echo ${OUT}
 else
     echo ${OUT}
-
-    # Wait for blockchain to register the address
+    touch transactions/register_stake_pool.submitted
     wait_for_slot ${TTL}
-    wait_for_address_registration
-    touch transactions/register_stake_address.submitted
-    echo "Your stake address is now registered in the blockchain."
+    echo "Your stake pool registration has been sent to the blockchain."
 fi

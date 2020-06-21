@@ -34,8 +34,8 @@ RUN git clone https://github.com/input-output-hk/cardano-node.git \
 WORKDIR /cardano-node/
 RUN cabal install cardano-node cardano-cli
 
-# Install python
-RUN apt-get install -y python3 python3-pip vim
+# Install dependencies
+RUN apt-get install -y python3 python3-pip vim procps
 
 # Expose ports
 ## cardano-node, EKG, Prometheus
@@ -51,6 +51,10 @@ ENV NODE_PORT="3000" \
     PROMETHEUS_PORT="12798" \
     RESOLVE_HOSTNAMES="False" \
     REPLACE_EXISTING_CONFIG="False" \
+    CREATE_STAKEPOOL="False" \
+    POOL_PLEDGE="100000000000" \
+    POOL_COST="10000000000" \
+    POOL_MARGIN="0.05" \
     PATH="/root/.cabal/bin/:/scripts/:/cardano-node/scripts/:${PATH}"
 
 # Add config
@@ -59,7 +63,7 @@ RUN mkdir -p /config/
 VOLUME /config/
 
 # Add scripts
-RUN echo "source /scripts/init-node-vars" >> /root/.bashrc
+RUN echo "source /scripts/init_node_vars" >> /root/.bashrc
 ADD scripts/ /scripts/
 RUN chmod -R +x /scripts/
 

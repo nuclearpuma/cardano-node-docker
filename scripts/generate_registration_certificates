@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# From Documentation
+# https://github.com/input-output-hk/cardano-tutorials/blob/master/node-setup/080_register_stakepool.md
+
+# Init vars
+source /scripts/init_node_vars
+
+# Enter staking directory
+cd ${NODE_PATH}/staking/
+
+echo ""
+echo "Generate registration certificates"
+
+# Check for required files
+if [ ! -f "stake.vkey" ]; then
+    echo "Missing required staking/stake.vkey. You need to run \`generate_stake_address\` to generate this key."
+    MISSING_FILES=1
+fi
+
+if [ ! -f "cold-keys/cold.vkey" ]; then
+    echo "Missing required staking/cold-keys/cold.vkey. You need to run \`generate_operational_certificate\` to generate this key."
+    MISSING_FILES=1
+fi
+
+if [ ! -f "pool-keys/vrf.vkey" ]; then
+    echo "Missing required staking/pool-keys/vrf.vkey. You need to run \`generate_operational_certificate\` to generate this key."
+    MISSING_FILES=1
+fi
+
+if [ -n "$MISSING_FILES" ]; then
+    exit
+fi
+
+# 1. Generate Stake pool registration certificate
+if [ ! -f "pool.cert" ]; then
+    cardano-cli shelley stake-pool registration-certificate \
+        --cold-verification-key-file cold-keys/cold.vkey \
+        --vrf-verification-key-file pool-keys/vrf.vkey \
+        --pool-pledge ${POOL_PLEDGE} \
+        --pool-cost ${POOL_COST} \
+        --pool-margin ${POOL_MARGIN} \
+        --pool-reward-account-verification-key-file stake.vkey \
+        --pool-owner-stake-verification-key-file stake.vkey \
+        ${NETWORK_ARGUMENT} \
+        --out-file pool.cert \
+    && echo "Generated pool.cert"
+    echo "export POOL_PLEDGE=${POOL_PLEDGE}" > POOL_VARS
+    echo "export POOL_COST=${POOL_COST}" >> POOL_VARS
+    echo "export POOL_MARGIN=${POOL_MARGIN}" >> POOL_VARS
+else
+    echo "pool.cert already exists."
+fi
+
+# 2. Generate delegation certificate (pledge)
+if [ ! -f "delegation.cert" ]; then
+    cardano-cli shelley stake-address delegation-certificate \
+        --stake-verification-key-file stake.vkey \
+        --cold-verification-key-file cold-keys/cold.vkey \
+        --out-file delegation.cert \
+    && echo "Generated delegation.cert"
+else
+    echo "delegation.cert already exists."
+fi

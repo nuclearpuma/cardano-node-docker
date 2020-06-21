@@ -1,26 +1,28 @@
 #!/bin/bash
 
-# Init config on first run
-if [ ! -f "${NODE_PATH}/VARS" ]; then
-    python3 /scripts/init_config.py
-fi
+# Include functions
+source /scripts/init_node_vars
+source /scripts/functions/run_node
+source /scripts/functions/init_config
 
-# Init cardano-node variables
-source /scripts/init-node-vars
+# Init config on first run
+if [[ ! -f "${NODE_PATH}/VARS" || "$REPLACE_EXISTING_CONFIG" == "True" ]]; then
+    init_config
+fi
 
 # Handle IP addresses
 export PUBLIC_IP=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com | awk -F'"' '{ print $2}')
 if [ -z "${HOST_ADDR}" ]; then
-    HOST_ADDR=${PUBLIC_IP}
+    export HOST_ADDR=${PUBLIC_IP}
 fi
 
 function help {
     echo "Arguments:"
     echo "--start                       Start node."
+    echo "--staking                     The node will be started as a staking node."
     echo "--cli                         Start command-line interface."
     echo "--update                      Update the node software."
     echo "--init_config                 Initialize config."
-    echo "--generate_address            Generate key and address."
     echo "--help                        Display this message."
     echo "Environment variables:"
     echo "NODE_PORT                     Port of node. Default: 3000."
@@ -33,32 +35,12 @@ function help {
     echo "PROMETHEUS_PORT               Port of Prometheus monitoring. Default: 12798."
     echo "RESOLVE_HOSTNAMES             Resolve topology hostnames to IP-addresses. Default: False."
     echo "REPLACE_EXISTING_CONFIG       Reset and replace existing configs. Default: False."
+    echo "CREATE_STAKEPOOL              Initializes Stake Pool keys, addresses and certificates, and sends them to the blockchain, when starting as a stakepool, if it is not already initialized. Default: False"
+    echo "POOL_PLEDGE                   Pledge (lovelace). Default: 100000000000"
+    echo "POOL_COST                     Operational costs per epoch (lovelace). Default: 10000000000"
+    echo "POOL_MARGIN                   Operator margin. Default: 0.05"
 
     exit
-}
-
-function node_info {
-    echo "Running cardano-node on ${CARDANO_NETWORK} network"
-    echo "Node name: ${NODE_NAME}"
-    echo "Host Address: ${HOST_ADDR}"
-    echo "Public IP: ${PUBLIC_IP}"
-    echo "Node Port: ${NODE_PORT}"
-    echo "Node path: ${NODE_PATH}"
-    echo "EKG Port: ${EKG_PORT}"
-    echo "Prometheus Port: ${PROMETHEUS_PORT}"
-}
-
-function start_node {
-    echo "Starting cardano-node"
-    python3 /scripts/init_config.py
-    node_info
-    cardano-node run \
-        --topology ${NODE_PATH}/topology.json \
-        --database-path ${NODE_PATH}/db \
-        --socket-path ${CARDANO_NODE_SOCKET_PATH} \
-        --host-addr ${HOST_ADDR} \
-        --port ${NODE_PORT} \
-        --config ${NODE_PATH}/config.json
 }
 
 for i in "$@"
@@ -78,11 +60,11 @@ case $i in
     --init_config)
         init_config
     ;;
-    --generate_address)
-        /scripts/generate_address
-    ;;
     --start)
         START_NODE=1
+    ;;
+    --staking)
+       STAKING=1
     ;;
     *)
         break
@@ -94,5 +76,11 @@ if [ -z "$1" ]; then
 fi
 
 if [ -n "$START_NODE" ]; then
-    start_node
+    if [ -n "$STAKING" ]; then
+        # Start as staking node
+        /scripts/start-stakenode
+    else
+        # Start as relay or passive node
+        run_node
+    fi
 fi
