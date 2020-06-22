@@ -106,7 +106,9 @@ echo "UTXO: ${UTXO}#${TXIX}"
 echo "Lovelace Holding: ${LOVELACE}"
 echo "Lovelace after transaction: ${REMAINING_AFTER_TX}"
 
+#
 # Create the transaction
+#
 cardano-cli shelley transaction build-raw \
     --tx-in "${UTXO}#${TXIX}" \
     --tx-out $(cat payment.addr)+${REMAINING_AFTER_TX} \
