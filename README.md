@@ -40,7 +40,7 @@ docker run -it --rm \
     -e PUID=$(id -u) \
     -e PGID=$(id -u) \
     -e NODE_PORT="3001" \
-    -e NODE_NAME="relay1" \
+    -e NODE_NAME="local-relay1" \
     -e NODE_RELAY="True" \
     -e NODE_TOPOLOGY="127.0.0.1:3000/1" \
     -e CARDANO_NETWORK="pioneer" \
@@ -65,7 +65,7 @@ docker run -it --rm \
     -e PUID=$(id -u) \
     -e PGID=$(id -u) \
     -e NODE_PORT="3000" \
-    -e NODE_NAME="block-producing" \
+    -e NODE_NAME="local-block-producing" \
     -e NODE_TOPOLOGY="127.0.0.1:3001/1" \
     -e NODE_RELAY="False" \
     -e CARDANO_NETWORK="pioneer" \
