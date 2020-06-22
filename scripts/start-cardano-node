@@ -19,7 +19,7 @@ fi
 function help {
     echo "Arguments:"
     echo "--start                       Start node."
-    echo "--staking                     The node will be started as a staking node."
+    echo "--staking                     Start as a staking node (Requires the \`--start\` argument)"
     echo "--cli                         Start command-line interface."
     echo "--update                      Update the node software."
     echo "--init_config                 Initialize config."

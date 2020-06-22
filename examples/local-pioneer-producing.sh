@@ -1,12 +1,12 @@
 #!/bin/bash
 
 #
-# This is an example on how to start a stakepool
+# This is an example on how to start a block-producing node and initialize and register the stakepool
 #
 
-# Start block-producing node
 docker run -it --rm \
     --network=host \
+    --name local-pioneer-producing \
     -e PUID=$(id -u) \
     -e PGID=$(id -u) \
     -e NODE_PORT="3000" \
@@ -16,13 +16,10 @@ docker run -it --rm \
     -e CARDANO_NETWORK="pioneer" \
     -e EKG_PORT="12788" \
     -e PROMETHEUS_PORT="12798" \
-    -e RESOLVE_HOSTNAMES="True" \
-    -e REPLACE_EXISTING_CONFIG="False" \
     -e HOST_ADDR="127.0.0.1" \
     -e POOL_PLEDGE="100000000000" \
     -e POOL_COST="10000000000" \
     -e POOL_MARGIN="0.05" \
     -e CREATE_STAKEPOOL="True" \
-    -v $PWD/active_config/pioneer/block-producing:/config/ \
-    -v $PWD/../scripts/:/scripts/ \
-    arrakis/cardano-node:1.13.0 --start --stakepool
+    -v $PWD/config/local/:/config/ \
+    arrakis/cardano-node:1.13.0 --start --staking

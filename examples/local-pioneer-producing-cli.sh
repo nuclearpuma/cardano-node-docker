@@ -1,10 +1,9 @@
 #!/bin/bash
 
 #
-# This is an example on how to start cli for a node.
+# This is an example on how to start cli for the block-producing node.
 #
 
-# Start block-producing node
 docker run -it --rm \
     --network=host \
     -e PUID=$(id -u) \
@@ -23,6 +22,5 @@ docker run -it --rm \
     -e POOL_COST="10000000000" \
     -e POOL_MARGIN="0.05" \
     -e CREATE_STAKEPOOL="True" \
-    -v $PWD/active_config/pioneer/block-producing:/config/ \
-    -v $PWD/../scripts/:/scripts/ \
+    -v $PWD/config/local/:/config/ \
     arrakis/cardano-node:1.13.0 --cli

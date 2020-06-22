@@ -54,7 +54,7 @@ if [ -n "$MISSING_FILES" ]; then
         check_for_files
 
         if [ -n "$MISSING_FILES" ]; then
-            echo "Required files are still missing. Something must have went wrong in the creation process. Requires manual checking."
+            echo "Required files are still missing. Something went wrong in the creation process. Requires manual checking."
             read
         else
             run
