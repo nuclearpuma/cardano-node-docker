@@ -91,8 +91,8 @@ FEE=$(cardano-cli shelley transaction calculate-min-fee \
     --protocol-params-file protocol.json | tr ' ' '\n' | tail -1)
 TOTAL_PRICE=$(expr ${FEE} + ${KEY_DEPOSIT})
 
-echo "Fee is: ${FEE}"
-echo "Key-Deposit: ${KEY_DEPOSIT}"
+echo "Fee is: ${FEE} Lovelace"
+echo "Key-Deposit: ${KEY_DEPOSIT} Lovelace"
 echo "Total Price is: ${TOTAL_PRICE}"
 
 # Find UTXO in address with enough lovelace to do the transaction
@@ -129,6 +129,7 @@ cardano-cli shelley transaction sign \
 OUT=$(cardano-cli shelley transaction submit \
     --tx-file transactions/register_stake_address.signed \
     ${NETWORK_ARGUMENT})
+echo "Transaction has been submitted to the blockchain."
 
 if [[ $OUT =~ "Error" ]]
 then

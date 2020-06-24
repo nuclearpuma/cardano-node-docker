@@ -88,8 +88,8 @@ FEE=$(cardano-cli shelley transaction calculate-min-fee \
     --protocol-params-file protocol.json | tr ' ' '\n' | tail -1)
 TOTAL_PRICE=$(expr ${FEE} + ${POOL_DEPOSIT})
 echo "Fee is: ${FEE}"
-echo "Pool-Deposit: ${POOL_DEPOSIT}"
-echo "Total Price is: ${TOTAL_PRICE}"
+echo "Pool-Deposit: ${POOL_DEPOSIT} Lovelace"
+echo "Total Price is: ${TOTAL_PRICE} Lovelace"
 
 # Find UTXO in address with enough lovelace to do the transaction
 ADDRESS=$(cat payment.addr)
@@ -127,6 +127,7 @@ cardano-cli shelley transaction sign \
 OUT=$(cardano-cli shelley transaction submit \
     --tx-file transactions/register_stake_pool.signed \
     ${NETWORK_ARGUMENT})
+echo "Transaction has been submitted to the blockchain."
 
 if [[ $OUT =~ "Error" ]]
 then

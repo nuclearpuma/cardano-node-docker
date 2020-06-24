@@ -24,8 +24,11 @@ function check_balance {
             echo "Address is successfully funded."
             break
         fi
-        echo "You need to fund your address ${ADDRESS} to register the key."
-        echo "If you have funded your address and your node is still syncing wait for your node to catch up."
+        
+        echo "You need to fund your address to register the key. Your payment address is:"
+        echo "${ADDRESS}"
+        echo "If you have funded your address, you need to wait for the transaction to be processed and your node to synchronize. Sync status:"
+        sync_status
 
         sleep 10
     done
