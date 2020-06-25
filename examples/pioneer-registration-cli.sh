@@ -20,4 +20,4 @@ docker run -it --rm \
     -e POOL_COST="10000000000" \
     -e POOL_MARGIN="0.05" \
     -v $PWD/config/:/config/ \
-    arrakis/cardano-node:1.13.0 --cli
+    arrakis/cardano-node:1.14.0 --cli

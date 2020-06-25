@@ -19,5 +19,6 @@ docker run -it --rm \
     -e POOL_PLEDGE="100000000000" \
     -e POOL_COST="10000000000" \
     -e POOL_MARGIN="0.05" \
+    -e METADATA_URL="https://gist.githubusercontent.com/abracadaniel/58dfa2cfe0f986c7f445deb151ed1b49/raw/4bb8155af7be65d7e9869f0923c7ce778c75368b/metadata.json" \
     -v $PWD/config/:/config/ \
-    arrakis/cardano-node:1.13.0 --start --staking
+    arrakis/cardano-node:1.14.0 --start --staking

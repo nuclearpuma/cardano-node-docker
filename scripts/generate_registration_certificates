@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # From Documentation
-# https://github.com/input-output-hk/cardano-tutorials/blob/master/node-setup/080_register_stakepool.md
+# https://github.com/input-output-hk/cardano-tutorials/blob/ecbfd0ec06e0515701ee3749ce96780c27d2249d/node-setup/080_register_stakepool.md
 
 # Init vars
 source /scripts/init_node_vars
@@ -32,8 +32,27 @@ if [ -n "$MISSING_FILES" ]; then
     exit
 fi
 
-# 1. Generate Stake pool registration certificate
+if [ -z "$METADATA_URL" ]; then
+    echo "Missing METADATA_URL You need to upload your metadata.json file at pass the URL to the METADATA_URL variable."
+    exit
+fi
+
+# 1. Create a JSON file with your pool's metadata
+if [ ! -f "metadata.json" ]; then
+    echo "Getting metadata file from ${METADATA_URL}"
+    wget ${METADATA_URL} > metadata.json
+fi
+# 2. get hash of file
+echo "Getting hash of metadata.json:"
+METADATA_HASH=$(cardano-cli shelley stake-pool metadata-hash --pool-metadata-file metadata.json)
+echo ${METADATA_HASH}
+
+# 3. Generate Stake pool registration certificate
 if [ ! -f "pool.cert" ]; then
+
+    RELAY_IP=$(jq -r ".Producers[0].addr" ${NODE_PATH}/topology.json)
+    RELAY_PORT=$(jq -r ".Producers[0].port" ${NODE_PATH}/topology.json)
+
     cardano-cli shelley stake-pool registration-certificate \
         --cold-verification-key-file cold-keys/cold.vkey \
         --vrf-verification-key-file pool-keys/vrf.vkey \
@@ -42,6 +61,10 @@ if [ ! -f "pool.cert" ]; then
         --pool-margin ${POOL_MARGIN} \
         --pool-reward-account-verification-key-file stake.vkey \
         --pool-owner-stake-verification-key-file stake.vkey \
+        --pool-relay-port ${RELAY_PORT} \
+        --pool-relay-ipv4 ${RELAY_IP} \
+        --metadata-url ${METADATA_URL} \
+        --metadata-hash ${METADATA_HASH} \
         ${NETWORK_ARGUMENT} \
         --out-file pool.cert \
     && echo "Generated pool.cert"
