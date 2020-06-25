@@ -23,5 +23,6 @@ docker run -it --rm \
     -e POOL_MARGIN="0.05" \
     -e CREATE_STAKEPOOL="True" \
     -e METADATA_URL="https://gist.githubusercontent.com/abracadaniel/58dfa2cfe0f986c7f445deb151ed1b49/raw/4bb8155af7be65d7e9869f0923c7ce778c75368b/metadata.json" \
+    -e PUBLIC_RELAY_IP="PUBLIC" \
     -v $PWD/config/local/:/config/ \
     arrakis/cardano-node:1.14.0 --cli

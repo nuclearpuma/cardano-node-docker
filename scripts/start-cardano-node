@@ -3,6 +3,7 @@
 # Include functions
 source /scripts/init_node_vars
 source /scripts/functions/run_node
+source /scripts/functions/get_public_ip
 source /scripts/functions/init_config
 
 # Init config on first run
@@ -11,7 +12,7 @@ if [[ ! -f "${NODE_PATH}/VARS" || "$REPLACE_EXISTING_CONFIG" == "True" ]]; then
 fi
 
 # Handle IP addresses
-export PUBLIC_IP=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com | awk -F'"' '{ print $2}')
+export PUBLIC_IP=$(get_public_ip)
 if [ -z "${HOST_ADDR}" ]; then
     export HOST_ADDR=${PUBLIC_IP}
 fi
@@ -29,6 +30,13 @@ function help {
     echo "NODE_NAME                     Name of node. Default: node1."
     echo "NODE_TOPOLOGY                 Topology of the node. Should be comma separated for each individual node to add, on the form: <ip>:<port>/<valency>. So for example: 127.0.0.1:3001/1,127.0.0.1:3002/1."
     echo "NODE_RELAY                    Set to True if default IOHK relay should be added to the network topology. Default: False."
+    echo "METADATA_URL                  URL for file containing stake pool metadata information. See \`examples/metadata.json\` for examle. The file be uploaded to an URL accessible to public."
+    echo "PUBLIC_RELAY_IP               Public IP address of Relay node."
+    echo "                              Values:"
+    echo "                              <Any IP address>"
+    echo "                              TOPOLOGY: Use first entry of the topology."
+    echo "                              PUBLIC: Use public IP of node."
+    echo "                              Default: TOPOLOGY."
     echo "HOST_ADDR                     Set cardano-node host address. Defaults to public IP address."
     echo "CARDANO_NETWORK               Carano network to use (main, test, pioneer). Default: main."
     echo "EKG_PORT                      Port of EKG monitoring. Default: 12788."

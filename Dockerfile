@@ -55,7 +55,8 @@ ENV NODE_PORT="3000" \
     POOL_PLEDGE="100000000000" \
     POOL_COST="10000000000" \
     POOL_MARGIN="0.05" \
-    METADATA_URL="0.05" \
+    METADATA_URL="" \
+    PUBLIC_RELAY_IP="TOPOLOGY" \
     PATH="/root/.cabal/bin/:/scripts/:/cardano-node/scripts/:${PATH}"
 
 # Add config
