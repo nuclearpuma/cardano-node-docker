@@ -1,8 +1,8 @@
 version: "3"
 services:
-  local-pioneer-producing: # block-producing node
-    image: arrakis/cardano-node:1.14.0
-    container_name: local-pioneer-producing
+  local-stn-producing: # block-producing node
+    image: arrakis/cardano-node:1.14.1
+    container_name: local-stn-producing
     network_mode: host
     volumes:
       - $PWD/config/local/:/config
@@ -13,20 +13,21 @@ services:
       - NODE_NAME=local-block-producing
       - NODE_TOPOLOGY=127.0.0.1:3001/1
       - NODE_RELAY=False
-      - CARDANO_NETWORK=pioneer
+      - CARDANO_NETWORK=shelley_test
       - EKG_PORT=12888
       - PROMETHEUS_PORT=12898
       - HOST_ADDR=127.0.0.1
       - POOL_PLEDGE=100000000000
-      - POOL_COST=10000000000
+      - POOL_COST=1000000000
       - POOL_MARGIN=0.05
       - CREATE_STAKEPOOL=True
       - METADATA_URL=https://gist.githubusercontent.com/abracadaniel/58dfa2cfe0f986c7f445deb151ed1b49/raw/4bb8155af7be65d7e9869f0923c7ce778c75368b/metadata.json
+      - PUBLIC_RELAY_IP=PUBLIC
     command: --start
     restart: unless-stopped
-  local-pioneer-relay: # relay node
-    image: arrakis/cardano-node:1.14.0
-    container_name: local-pioneer-relay
+  local-stn-relay: # relay node
+    image: arrakis/cardano-node:1.14.1
+    container_name: local-stn-relay
     network_mode: host
     volumes:
       - $PWD/config/local/:/config
@@ -37,9 +38,9 @@ services:
       - NODE_NAME=local-relay1
       - NODE_TOPOLOGY=127.0.0.1:3000/1
       - NODE_RELAY=True
-      - CARDANO_NETWORK=pioneer
+      - CARDANO_NETWORK=shelley_test
       - EKG_PORT=12889
       - PROMETHEUS_PORT=12899
-      - HOST_ADDR=127.0.0.1
+      - HOST_ADDR=0.0.0.0
     command: --start
     restart: unless-stopped

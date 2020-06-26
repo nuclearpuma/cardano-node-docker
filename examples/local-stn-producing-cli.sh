@@ -12,7 +12,7 @@ docker run -it --rm \
     -e NODE_NAME="local-block-producing" \
     -e NODE_TOPOLOGY="127.0.0.1:3001/1" \
     -e NODE_RELAY="False" \
-    -e CARDANO_NETWORK="pioneer" \
+    -e CARDANO_NETWORK="shelley_test" \
     -e EKG_PORT="12788" \
     -e PROMETHEUS_PORT="12798" \
     -e RESOLVE_HOSTNAMES="True" \
@@ -25,4 +25,4 @@ docker run -it --rm \
     -e METADATA_URL="https://gist.githubusercontent.com/abracadaniel/58dfa2cfe0f986c7f445deb151ed1b49/raw/4bb8155af7be65d7e9869f0923c7ce778c75368b/metadata.json" \
     -e PUBLIC_RELAY_IP="PUBLIC" \
     -v $PWD/config/local/:/config/ \
-    arrakis/cardano-node:1.14.0 --cli
+    arrakis/cardano-node:1.14.1 --cli
