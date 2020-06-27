@@ -67,12 +67,9 @@ cardano-cli shelley query protocol-parameters \
 # Get pool-deposit
 POOL_DEPOSIT=$(cat protocol.json  | grep poolDeposit | tr ' ' '\n' | tail -1 | sed 's/,//g')
 
-# Get tip
+# Get slot and TTL
 SLOT=$(get_slot)
 TTL=$(expr ${SLOT} + 500)
-
-echo "Current tip Slot: ${SLOT}"
-echo "TTL: ${TTL}"
 
 ## Get the fee
 FEE=$(cardano-cli shelley transaction calculate-min-fee \
@@ -95,12 +92,18 @@ echo "Total Price is: ${TOTAL_PRICE} Lovelace"
 ADDRESS=$(cat payment.addr)
 check_balance
 
+# Update slot and TTL
+SLOT=$(get_slot)
+TTL=$(expr ${SLOT} + 500)
+
 # Display transaction info
 REMAINING_AFTER_TX=$(expr ${LOVELACE} - ${TOTAL_PRICE})
 echo "Creating transaction"
 echo "UTXO: ${UTXO}#${TXIX}"
 echo "Lovelace Holding: ${LOVELACE}"
 echo "Lovelace after transaction: ${REMAINING_AFTER_TX}"
+echo "Current tip Slot: ${SLOT}"
+echo "TTL: ${TTL}"
 
 #
 # Create the transaction

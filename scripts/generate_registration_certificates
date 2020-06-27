@@ -42,12 +42,12 @@ fi
 # 1. Create a JSON file with your pool's metadata
 if [ ! -f "metadata.json" ]; then
     echo "Getting metadata file from ${METADATA_URL}"
-    wget ${METADATA_URL} > metadata.json
+    wget -O metadata.json ${METADATA_URL}
 fi
 # 2. get hash of file
-echo "Getting hash of metadata.json:"
+echo "Getting hash of metadata.json"
 METADATA_HASH=$(cardano-cli shelley stake-pool metadata-hash --pool-metadata-file metadata.json)
-echo ${METADATA_HASH}
+echo "metadata.json hash: ${METADATA_HASH}"
 
 # 3. Generate Stake pool registration certificate
 if [ ! -f "pool.cert" ]; then
@@ -74,7 +74,7 @@ if [ ! -f "pool.cert" ]; then
         --pool-owner-stake-verification-key-file stake.vkey \
         --pool-relay-port ${PUBLIC_RELAY_PORT} \
         --pool-relay-ipv4 ${PUBLIC_RELAY_IP} \
-        --metadata-url ${METADATA_URL} \
+        --metadata-url '${METADATA_URL}' \
         --metadata-hash ${METADATA_HASH} \
         ${NETWORK_ARGUMENT} \
         --out-file pool.cert \
