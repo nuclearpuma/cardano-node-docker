@@ -18,4 +18,4 @@ docker run -it --rm \
     -e PROMETHEUS_PORT="12799" \
     -e HOST_ADDR="0.0.0.0" \
     -v $PWD/config/local/:/config/ \
-    arrakis/cardano-node:1.14.1 --start
+    arrakis/cardano-node:latest --start

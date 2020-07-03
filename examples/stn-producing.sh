@@ -16,4 +16,4 @@ docker run -it --rm \
     -e CARDANO_NETWORK="shelley_test" \
     -e PROMETHEUS_PORT="12798" \
     -v $PWD/config/:/config/ \
-    arrakis/cardano-node:1.14.1 --start --staking
+    arrakis/cardano-node:latest --start --staking

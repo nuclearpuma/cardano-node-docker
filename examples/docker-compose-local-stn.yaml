@@ -1,7 +1,7 @@
 version: "3"
 services:
   local-stn-producing: # block-producing node
-    image: arrakis/cardano-node:1.14.1
+    image: arrakis/cardano-node:latest
     container_name: local-stn-producing
     network_mode: host
     volumes:
@@ -26,7 +26,7 @@ services:
     command: --start
     restart: unless-stopped
   local-stn-relay: # relay node
-    image: arrakis/cardano-node:1.14.1
+    image: arrakis/cardano-node:latest
     container_name: local-stn-relay
     network_mode: host
     volumes:
