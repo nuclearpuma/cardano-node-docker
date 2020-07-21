@@ -1,0 +1,8 @@
+# my global config
+global:
+  scrape_interval:     [SCRAPE_INTERVAL]s
+
+scrape_configs:
+  - job_name: 'cardano-node'
+    static_configs:
+    - targets: ['[NODE_HOST]:[NODE_PORT]']
