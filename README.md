@@ -231,7 +231,7 @@ You can pass the following environment variables to the container.
 | PGID | Group ID of user running the container |
 | NODE_PORT | Port of node. Default: 3000. |
 | NODE_NAME | Name of node. Default: node1. |
-| NODE_TOPOLOGY | Topology of the node. Should be comma separated for each individual node to add, on the form: <ip>:<port>/<valency>. So for example: 127.0.0.1:3001/1,127.0.0.1:3002/1. |
+| NODE_TOPOLOGY | Topology of the node. Should be comma separated for each individual node to add, on the form: \<ip\>:\<port\>/\<valency\>. So for example: 127.0.0.1:3001/1,127.0.0.1:3002/1. |
 | NODE_RELAY | Set to True if default IOHK relay should be added to the network topology. Default: False. |
 | HOST_ADDR | Set cardano-node host address. Defaults to public IP address. |
 | CARDANO_NETWORK | Carano network to use (main, test, pioneer). Default: main. |
@@ -245,7 +245,7 @@ You can pass the following environment variables to the container.
 | POOL_COST | Operational costs per epoch (lovelace). Default: 10000000000 |
 | POOL_MARGIN | Operator margin. Default: 0.05 |
 | METADATA_URL | URL for file containing stake pool metadata information. See \`examples/metadata.json\` for examle. The file be uploaded to an URL accessible to public. |
-| PUBLIC_RELAY_IP | Public IP address of Relay node. \\Values:\\<Any IP address>\\TOPOLOGY: Use first entry of the topology.\\PUBLIC: Use public IP of node.\\Default: TOPOLOGY. |
+| PUBLIC_RELAY_IP | Public IP address of Relay node. <br/><br/>Values:<br/>\<Any IP address\><br/>TOPOLOGY: Use first entry of the topology.<br/>PUBLIC: Use public IP of node.<br/>Default: TOPOLOGY. |
 
 
 ## Commands
@@ -311,3 +311,12 @@ git clone https://github.com/abracadaniel/cardano-node-docker.git
 cd cardano-node-docker
 ./build.sh
 ```
+
+
+## Thank you
+
+I hope you will find this useful. If you like the work please consider delegating to my pool:
+`[ARRA1] Arrakis (c65ca06828caa8fc9b0bb015af93ef71685544c6ed2abbb7c59b0e62)`
+
+or donating a few ADA to:
+`addr1qyfdc9rkw2njpevpene998w93uyghftspnv6muxkwt82tyyjn4up3dddmmul3a5p98996dyd5nhn2mwthwce6rjrp0espmglvg`
