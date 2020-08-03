@@ -98,7 +98,7 @@ def parse_topology_str(s) -> list:
             (ip_port, valency) = a.split('/')
             (ip, port) = ip_port.split(':')
 
-            if resolve_hostname: ip = resolve_hostname(ip)
+            #if resolve_hostname: ip = resolve_hostname(ip)
 
             topology.append({
                 'addr': str(ip),

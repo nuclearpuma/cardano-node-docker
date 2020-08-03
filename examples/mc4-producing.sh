@@ -13,7 +13,7 @@ docker run -it --rm \
     -e EKG_PORT="12788" \
     -e PROMETHEUS_PORT="12798" \
     -e PROMETHEUS_HOST="127.0.0.1" \
-    -e HOST_ADDR="127.0.0.1" \
+    -e HOST_ADDR="0.0.0.0" \
     -e POOL_PLEDGE="100000000000" \
     -e POOL_COST="1000000000" \
     -e POOL_MARGIN="0.05" \

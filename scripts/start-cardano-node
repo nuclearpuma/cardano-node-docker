@@ -48,6 +48,7 @@ function help {
     echo "POOL_PLEDGE                   Pledge (lovelace). Default: 100000000000"
     echo "POOL_COST                     Operational costs per epoch (lovelace). Default: 10000000000"
     echo "POOL_MARGIN                   Operator margin. Default: 0.05"
+    echo "AUTO_TOPOLOGY                 Automatically update topology.json. Default: True"
 
     exit
 }
@@ -89,7 +90,14 @@ if [ -n "$START_NODE" ]; then
         # Start as staking node
         /scripts/start-stakenode
     else
-        # Start as relay or passive node
-        run_node
+        # Update topology
+        if [[ "${AUTO_TOPOLOGY}" == "True" ]]; then
+            tmux \
+                new-session  "source /scripts/functions/run_node; run_node" \; \
+                split-window "source /scripts/functions/auto_topology_start; auto_topology_start" \; \
+                select-layout even-horizontal
+        else
+            run_node
+        fi
     fi
 fi

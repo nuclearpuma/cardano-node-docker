@@ -1,3 +1,5 @@
 examples/config/
 private/
 /rsync.sh
+*.pyc
+__pycache__

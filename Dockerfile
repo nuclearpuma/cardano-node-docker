@@ -45,7 +45,7 @@ WORKDIR /cardano-node/
 RUN cabal install cardano-node cardano-cli
 
 # Install tools
-RUN apt-get install -y vim procps dnsutils bc curl nano
+RUN apt-get install -y vim procps dnsutils bc curl nano cron
 
 # Expose ports
 ## cardano-node, EKG, Prometheus
@@ -69,6 +69,7 @@ ENV NODE_PORT="3000" \
     METADATA_URL="" \
     PUBLIC_RELAY_IP="TOPOLOGY" \
     WAIT_FOR_SYNC="True" \
+    AUTO_TOPOLOGY="True" \
     PATH="/root/.cabal/bin/:/scripts/:/cardano-node/scripts/:${PATH}"
 
 # Add config

@@ -1,4 +1,6 @@
-# Running a Cardano Node
+# Running a Cardano Stake Pool
+
+Visit my stake pool @ [ada.arrakis.it](https://ada.arrakis.it).
 
 From the official [cardano-node setup](https://docs.cardano.org/projects/cardano-node/en/latest/) tutorials from IOHK.
 The container downloads and builds the [cardano-node](https://github.com/input-output-hk/cardano-node.git).
@@ -77,7 +79,7 @@ docker run -it --rm \
     -e EKG_PORT="12788" \
     -e PROMETHEUS_PORT="12798" \
     -e PROMETHEUS_HOST="127.0.0.1" \
-    -e HOST_ADDR="127.0.0.1" \
+    -e HOST_ADDR="0.0.0.0" \
     -e POOL_PLEDGE="100000000000" \
     -e POOL_COST="1000000000" \
     -e POOL_MARGIN="0.05" \
@@ -246,6 +248,7 @@ You can pass the following environment variables to the container.
 | POOL_MARGIN | Operator margin. Default: 0.05 |
 | METADATA_URL | URL for file containing stake pool metadata information. See \`examples/metadata.json\` for examle. The file be uploaded to an URL accessible to public. |
 | PUBLIC_RELAY_IP | Public IP address of Relay node. <br/><br/>Values:<br/>\<Any IP address\><br/>TOPOLOGY: Use first entry of the topology.<br/>PUBLIC: Use public IP of node.<br/>Default: TOPOLOGY. |
+| AUTO_TOPOLOGY | Automatically update topology.json. Default: True |
 
 
 ## Commands
@@ -253,6 +256,7 @@ You can pass the following environment variables to the container.
 These commands can be run from the command-line interface of the container.
 
 | Command | Description |
+| :-- | -- |
 | create_stakepool | Take all the steps to initialize and register the stakepool from scratch. |
 | generate_stake_address | Generate payment and stake keys and addresses. |
 | generate_registration_certificates | Generates stakepool registration certificates. |
